@@ -1,8 +1,18 @@
 import React from "react";
 import CustomButton from "../components/CustomButton";
 import Navbar from "../components/Navbar";
+import axios from "axios";
+
 
 const LoginPage = () => {
+
+  const handleSubmit = async () => {
+   
+
+
+  }
+
+
   return (
     <div className="pt-10">
       <div className="bg-[#FAFAFA]  flex justify-around pt-30 h-150">
@@ -51,7 +61,7 @@ const LoginPage = () => {
                 Forget Password? | Register
               </p>
               <div className="pt-5">
-                <CustomButton title="Login" />
+                <CustomButton onClick={handleSubmit} title="Login" />
               </div>
             </div>
           </div>

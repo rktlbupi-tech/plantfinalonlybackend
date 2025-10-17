@@ -14,3 +14,8 @@ const AuthRoutes = () => {
 };
 
 export default AuthRoutes;
+
+
+// /fetch
+// /http
+// /axios
