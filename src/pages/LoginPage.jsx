@@ -2,16 +2,18 @@ import React from "react";
 import CustomButton from "../components/CustomButton";
 import Navbar from "../components/Navbar";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 const LoginPage = () => {
 
   const handleSubmit = async () => {
-   
+
 
 
   }
 
+  const navigate = useNavigate();
 
   return (
     <div className="pt-10">
@@ -57,8 +59,8 @@ const LoginPage = () => {
                 placeholder="Password"
                 className="h-10 w-60  border text-center  border-black  rounded-[14px]"
               />
-              <p className="text-[#26a66b] text-[17px]  pt-4">
-                Forget Password? | Register
+              <p className="text-[#26a66b] text-[17px]  pt-4 ">
+                Forget Password? | <span className="cursor-pointer hover:text-green-800 transition-all duration-300" onClick={() => navigate('/auth/signup')}>Register</span>
               </p>
               <div className="pt-5">
                 <CustomButton onClick={handleSubmit} title="Login" />

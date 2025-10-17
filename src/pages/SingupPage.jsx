@@ -1,8 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import CustomButton from "../components/CustomButton";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SingupPage = () => {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    mobno: "",
+    email: "",
+    password: ""
+  })
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  }
+
+  const handleSubmit = async (e) => {
+
+    e.preventDefault();
+    console.log("here i form data....")
+    console.log(formData);
+
+    try {
+      //  http://localhost:4000 - frontend 
+      const response =  await axios.post("http://localhost:4000/auth/signup", formData)
+      console.log("here is resons",response.data);
+
+
+    } catch (e) {
+      console.log("Errororororor23423423",e.response)
+    }
+
+
+
+  }
+
+  // 'cors ' => cross origin resource service 
+
   return (
     <div className="pt-10">
       <div className="bg-[#FAFAFA]  flex justify-around pt-30 h-170">
@@ -30,49 +67,60 @@ const SingupPage = () => {
               View all of your reports and scheduled health
               <br /> exams in one location.
             </p>
-            <div className="pt-10 ">
-              <input
-                type="text"
-                name=""
-                id=""
-                placeholder=" Name"
-                className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
-              />
-              <br />
-              <br />
-              <input
-                type="text"
-                name=""
-                id=""
-                placeholder="Mobile Number"
-                className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
-              />
-              <br />
-              <br />
-              <input
-                type="text"
-                name=""
-                id=""
-                placeholder="Email ID"
-                className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
-              />
-              <br />
-              <br />
+            <form onSubmit={handleSubmit}>
 
-              <input
-                type="text"
-                name=""
-                id=""
-                placeholder="Password"
-                className="h-10 w-60  border text-center  border-black  rounded-[14px]"
-              />
-              <p className="text-[#26a66b] text-[17px]  pt-4">
-                Forget Password? | Register
-              </p>
-              <div className="pt-5">
-                <CustomButton title="Sign Up" />
+              <div className="pt-10 ">
+                <input
+                  type="text"
+                  name="name"
+
+                  id=""
+                  placeholder=" Name"
+                  onChange={handleChange}
+                  className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
+                />
+                <br />
+                <br />
+                <input
+                  type="number"
+                  name="mobno"
+                  id=""
+                  placeholder="Mobile Number"
+                  onChange={handleChange}
+
+                  className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
+                />
+                <br />
+                <br />
+                <input
+                  type="email"
+                  name="email"
+                  id=""
+                  placeholder="Email ID"
+                  onChange={handleChange}
+
+                  className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
+                />
+                <br />
+                <br />
+
+                <input
+                  type="password"
+                  name="password"
+                  id=""
+                  placeholder="Password"
+                  onChange={handleChange}
+
+                  className="h-10 w-60  border text-center  border-black  rounded-[14px]"
+                />
+                <p className="text-[#26a66b] text-[17px]  pt-4">
+                  Already SignIn? | <span className="cursor-pointer" onClick={() => navigate('/auth/login')}  >Login</span>
+                </p>
+                <div className="pt-5">
+                  <CustomButton type={"submit"} title="Sign Up" />
+                </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
