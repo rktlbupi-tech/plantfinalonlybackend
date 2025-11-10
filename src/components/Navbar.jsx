@@ -31,6 +31,14 @@ const Navbar = () => {
           </div>
           <div>Add to cart</div>
           <div><CustomButton onClick={()=>navigate("/auth/login")} title='Login'/></div>
+          <div>
+            <button
+              onClick={() => navigate("/admin/dashboard")}
+              className="bg-[#8F3E97] hover:bg-[#7a2e82] cursor-pointer text-center text-white px-6 py-2 rounded-md transition-all duration-300"
+            >
+              Admin Panel
+            </button>
+          </div>
         </div>
       </div>
     </div>

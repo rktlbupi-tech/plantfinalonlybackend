@@ -3,42 +3,18 @@ import CustomButton from "../components/CustomButton";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuthStore } from "../data/store/useAuthStore";
 
 const SingupPage = () => {
   const navigate = useNavigate();
+  const {formData,user,loading,error,setFormData, login} = useAuthStore();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    mobno: "",
-    email: "",
-    password: ""
-  })
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
 
   const handleSubmit = async (e) => {
-
-    e.preventDefault();
-    console.log("here i form data....")
-    console.log(formData);
-
-    try {
-      //  http://localhost:4000 - frontend 
-      const response =  await axios.post("http://localhost:4000/auth/signup", formData)
-      console.log("here is resons",response.data);
-
-
-    } catch (e) {
-      console.log("Errororororor23423423",e.response)
-    }
-
-
-
+   e.preventDefault();
+   login();
   }
 
-  // 'cors ' => cross origin resource service 
 
   return (
     <div className="pt-10">
@@ -73,10 +49,10 @@ const SingupPage = () => {
                 <input
                   type="text"
                   name="name"
-
                   id=""
+                  value={formData.name}
                   placeholder=" Name"
-                  onChange={handleChange}
+                  onChange={(e)=>setFormData("name", e.target.name)}
                   className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
                 />
                 <br />
@@ -85,8 +61,9 @@ const SingupPage = () => {
                   type="number"
                   name="mobno"
                   id=""
+                  value={formData.number}
                   placeholder="Mobile Number"
-                  onChange={handleChange}
+                  onChange={(e)=>setFormData("mobno", e.target.value)}
 
                   className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
                 />
@@ -97,7 +74,8 @@ const SingupPage = () => {
                   name="email"
                   id=""
                   placeholder="Email ID"
-                  onChange={handleChange}
+                 value={formData.email}
+                  onChange={(e)=>setFormData("email", e.target.value)}
 
                   className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
                 />
@@ -108,8 +86,9 @@ const SingupPage = () => {
                   type="password"
                   name="password"
                   id=""
+                  value={formData.password}
                   placeholder="Password"
-                  onChange={handleChange}
+                  onChange={(e)=>setFormData("password", e.target.value)}
 
                   className="h-10 w-60  border text-center  border-black  rounded-[14px]"
                 />
@@ -117,7 +96,7 @@ const SingupPage = () => {
                   Already SignIn? | <span className="cursor-pointer" onClick={() => navigate('/auth/login')}  >Login</span>
                 </p>
                 <div className="pt-5">
-                  <CustomButton type={"submit"} title="Sign Up" />
+                  <CustomButton type={"submit"} title={`${loading ? "Loading...":"Submit"} `} />
                 </div>
               </div>
             </form>

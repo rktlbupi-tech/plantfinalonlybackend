@@ -2,11 +2,8 @@ import React from "react";
 import Index from "./Index";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AuthRoutes from "./routes/AuthRoutes";
+import AdminRoutes from "./routes/AdminRoutes";
 import MainLayout from "./layouts/MainLayout";
-
-// Browser router
-// routes
-// route
 
 const App = () => {
   return (
@@ -17,6 +14,7 @@ const App = () => {
         </Route>
 
         <Route path="/auth/*" element={<AuthRoutes />} />
+        <Route path="/admin/*" element={<AdminRoutes />} />
       </Routes>
     </BrowserRouter>
   );
