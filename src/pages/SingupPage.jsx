@@ -1,19 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomButton from "../components/CustomButton";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuthStore } from "../data/store/useAuthStore";
+import toast, { Toaster } from "react-hot-toast";
 
 const SingupPage = () => {
   const navigate = useNavigate();
-  const {formData,user,loading,error,setFormData, login} = useAuthStore();
+  const { formData, user, loading, error, setFormData, login, register } = useAuthStore();
 
+  // const notify = () => toast('Here is your toast.');
 
   const handleSubmit = async (e) => {
-   e.preventDefault();
-   login();
+
+    // notify()
+    e.preventDefault();
+    register();
   }
+
+  useEffect(() => {
+    if (error) {
+      toast(error)
+    }
+  },[error])
+
+  // 1. when come to that screen 
+  // 2. when somthings change 
+  // 3. when dependancy changed
 
 
   return (
@@ -48,11 +62,11 @@ const SingupPage = () => {
               <div className="pt-10 ">
                 <input
                   type="text"
-                  name="name"
+                  name="fullname"
                   id=""
-                  value={formData.name}
+                  value={formData.fullname}
                   placeholder=" Name"
-                  onChange={(e)=>setFormData("name", e.target.name)}
+                  onChange={(e) => setFormData("fullname", e.target.name)}
                   className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
                 />
                 <br />
@@ -61,9 +75,9 @@ const SingupPage = () => {
                   type="number"
                   name="mobno"
                   id=""
-                  value={formData.number}
+                  value={formData.mobno}
                   placeholder="Mobile Number"
-                  onChange={(e)=>setFormData("mobno", e.target.value)}
+                  onChange={(e) => setFormData("mobno", e.target.value)}
 
                   className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
                 />
@@ -74,8 +88,8 @@ const SingupPage = () => {
                   name="email"
                   id=""
                   placeholder="Email ID"
-                 value={formData.email}
-                  onChange={(e)=>setFormData("email", e.target.value)}
+                  value={formData.email}
+                  onChange={(e) => setFormData("email", e.target.value)}
 
                   className="h-10 w-60  text-center  border  border-black  rounded-[14px]"
                 />
@@ -88,7 +102,7 @@ const SingupPage = () => {
                   id=""
                   value={formData.password}
                   placeholder="Password"
-                  onChange={(e)=>setFormData("password", e.target.value)}
+                  onChange={(e) => setFormData("password", e.target.value)}
 
                   className="h-10 w-60  border text-center  border-black  rounded-[14px]"
                 />
@@ -96,8 +110,10 @@ const SingupPage = () => {
                   Already SignIn? | <span className="cursor-pointer" onClick={() => navigate('/auth/login')}  >Login</span>
                 </p>
                 <div className="pt-5">
-                  <CustomButton type={"submit"} title={`${loading ? "Loading...":"Submit"} `} />
+                  <CustomButton type={"submit"} title={`${loading ? "Loading..." : "Submit"} `} />
                 </div>
+
+                {/* {error} */}
               </div>
             </form>
           </div>

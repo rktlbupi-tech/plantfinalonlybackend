@@ -1,12 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../data/store/useAuthStore";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const { formData, loading, error, setFormData, login } = useAuthStore();
 
   const handleSubmit = async (e) => {
+        toast('Here is your toast.');
+
     e.preventDefault();
     login();
   };

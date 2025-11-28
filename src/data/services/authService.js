@@ -15,11 +15,31 @@ export const authService = {
       if (data?.success === false) {
         throw new Error(data.message || "Login failed");
       }
-
       return data;
     } catch (e) {
       console.error(" error from authService:", e);
       throw e;
     }
   },
+
+  async register(formData)
+  {
+    console.log("hello33")
+    try{
+      const response = await apiClient.post("auth/signup",formData);
+       if(response.success == false)
+       {
+        throw new Error(data.message || "Register failed");
+       }
+       console.log("data is coming from register")
+       console.log(response.message)
+       return response.data;
+
+    }catch(e)
+    {
+
+      console.log("Error",e)
+
+    }
+  }
 };
