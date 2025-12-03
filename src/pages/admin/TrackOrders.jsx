@@ -5,7 +5,7 @@ const TrackOrders = () => {
   const { orders, updateOrderStatus } = useOrderStore();
   const [filterStatus, setFilterStatus] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   const statusOptions = [
     { value: "all", label: "All Orders" },
     { value: "pending", label: "Pending" },
@@ -14,16 +14,16 @@ const TrackOrders = () => {
     { value: "delivered", label: "Delivered" },
     { value: "cancelled", label: "Cancelled" }
   ];
-  
+
   const filteredOrders = orders.filter(order => {
     const matchesStatus = filterStatus === "all" || order.status === filterStatus;
-    const matchesSearch = 
-      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      order._id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.user?.fullname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.user?.email?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesStatus && matchesSearch;
   });
-  
+
   const getStatusColor = (status) => {
     switch (status) {
       case "pending": return "bg-orange-100 text-orange-800";
@@ -34,18 +34,18 @@ const TrackOrders = () => {
       default: return "bg-gray-100 text-gray-800";
     }
   };
-  
+
   const handleStatusChange = (orderId, newStatus) => {
     updateOrderStatus(orderId, newStatus);
   };
-  
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-800">Track Orders</h1>
         <p className="text-gray-600 mt-1">Manage and track all customer orders</p>
       </div>
-      
+
       {/* Filters */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -61,7 +61,7 @@ const TrackOrders = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#26A66B] focus:border-transparent outline-none"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Filter by Status
@@ -80,7 +80,7 @@ const TrackOrders = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Orders Table */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="overflow-x-auto">
@@ -105,9 +105,9 @@ const TrackOrders = () => {
                 </tr>
               ) : (
                 filteredOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50">
+                  <tr key={order._id} className="hover:bg-gray-50">
                     <td className="py-4 px-6">
-                      <div className="font-medium text-gray-900">{order.id}</div>
+                      <div className="font-medium text-gray-900">{order._id}</div>
                       {order.trackingNumber && (
                         <div className="text-xs text-gray-500 mt-1">
                           Track: {order.trackingNumber}
@@ -115,23 +115,23 @@ const TrackOrders = () => {
                       )}
                     </td>
                     <td className="py-4 px-6">
-                      <div className="text-sm font-medium text-gray-900">{order.customerName}</div>
-                      <div className="text-xs text-gray-500">{order.customerEmail}</div>
+                      <div className="text-sm font-medium text-gray-900">{order.user?.fullname || "Unknown User"}</div>
+                      <div className="text-xs text-gray-500">{order.user?.email || "No Email"}</div>
                     </td>
                     <td className="py-4 px-6">
                       <div className="text-sm text-gray-900">
-                        {order.items.map((item, idx) => (
+                        {order.products?.map((item, idx) => (
                           <div key={idx} className="mb-1">
-                            {item.quantity}x {item.name}
+                            {item.quantity}x {item.product?.name || "Unknown Product"}
                           </div>
                         ))}
                       </div>
                     </td>
                     <td className="py-4 px-6">
                       <div className="text-sm font-semibold text-gray-900">
-                        ${order.totalAmount.toFixed(2)}
+                        ${order.totalAmount?.toFixed(2)}
                       </div>
-                      <div className="text-xs text-gray-500">{order.paymentMethod}</div>
+                      <div className="text-xs text-gray-500">{order.paymentMethod || "N/A"}</div>
                     </td>
                     <td className="py-4 px-6">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
@@ -139,15 +139,15 @@ const TrackOrders = () => {
                       </span>
                     </td>
                     <td className="py-4 px-6">
-                      <div className="text-sm text-gray-900">{order.orderDate}</div>
+                      <div className="text-sm text-gray-900">{new Date(order.createdAt).toLocaleDateString()}</div>
                       {order.deliveredDate && (
-                        <div className="text-xs text-gray-500">Delivered: {order.deliveredDate}</div>
+                        <div className="text-xs text-gray-500">Delivered: {new Date(order.deliveredDate).toLocaleDateString()}</div>
                       )}
                     </td>
                     <td className="py-4 px-6">
                       <select
                         value={order.status}
-                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
                         className="text-xs px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#26A66B] focus:border-transparent outline-none"
                       >
                         <option value="pending">Pending</option>
@@ -164,7 +164,7 @@ const TrackOrders = () => {
           </table>
         </div>
       </div>
-      
+
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow-md p-4">

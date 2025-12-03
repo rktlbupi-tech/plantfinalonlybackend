@@ -8,10 +8,27 @@ const LoginPage = () => {
   const { formData, loading, error, setFormData, login } = useAuthStore();
 
   const handleSubmit = async (e) => {
-        toast('Here is your toast.');
-
     e.preventDefault();
-    login();
+    const success = await login();
+    if (success) {
+      const user = useAuthStore.getState().user;
+      toast.success("Login successful!");
+
+      // Redirect based on role
+      // Redirect based on role
+      if (user.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else if (user.role === 'vendor') {
+        if (user.isVerified) {
+          navigate('/vendor/dashboard');
+        } else {
+          toast("Your vendor account is pending approval.", { icon: "⏳" });
+          navigate('/');
+        }
+      } else {
+        navigate('/');
+      }
+    }
   };
 
   return (
@@ -27,7 +44,7 @@ const LoginPage = () => {
               Your Plant Paradise
             </h2>
             <p className="text-gray-600 text-lg md:text-xl mb-8 leading-relaxed">
-              Discover a world of beautiful plants and create your own green oasis. 
+              Discover a world of beautiful plants and create your own green oasis.
               Join our community of plant lovers and bring nature into your home.
             </p>
             <div className="flex items-center gap-4 text-[#26A66B]">

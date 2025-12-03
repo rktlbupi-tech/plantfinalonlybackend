@@ -1,81 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import PlantCard from "../PlantCard";
 import CustomHeading from "../CustomHeading";
-import img from '../../assets/images/hero.png'
- import plant1 from"../../assets/images/plant1.png"
- import plant2 from"../../assets/images/plant2.png"
- import plant3 from"../../assets/images/plant3.png"
- import plant4 from"../../assets/images/plant4.png"
- import plant5 from"../../assets/images/plant5.png"
- import plant6 from"../../assets/images/plant6.png"
- import plant7 from"../../assets/images/plant7.png"
-// from pritam branch 
+import { useProductStore } from "../../data/store/useProductStore";
+import { useNavigate } from "react-router-dom";
 
 const PopularPlants = () => {
-  const plantList = [
-    {
-      image:img,
-      title:"Big Can More Set",
-      price:350
-    },
-    {
-      image:plant6,
-      title:"Set More ",
-      price:530
-    },
-    {
-      image:plant4,
-      title:"Green Plant",
-      price:250
-    },
-    {
-      image:plant3,
-      title:"Bertie",
-      price:300
-    },
-    {
-      image:plant4,
-      title:"Big Can More Sst ",
-      price:560
-    },
+  const { products, fetchProducts, loading } = useProductStore();
+  const navigate = useNavigate();
 
-    {
-      image:plant5,
-      title:"Big Can More Set",
-      price:700
-    },
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
-    {
-      image:plant6,
-      title:"Big Can More Set ",
-      price:580
-    },
+  if (loading) {
+    return (
+      <div className="container mx-auto py-12 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#26A66B] mx-auto"></div>
+      </div>
+    );
+  }
 
-    {
-      image:img,
-      title:"Big Can More Set",
-      price:3070
-    },
-  ]
   return (
-    <div className="container mx-auto">
-      <div className="text-center">
+    <div className="container mx-auto py-12 px-4">
+      <div className="text-center mb-12">
         <CustomHeading title={"Popular Plants"} />
+        <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+          Explore our best-selling plants, carefully curated to bring life and beauty to your space.
+        </p>
       </div>
-      <div className="w-full">
-        <div className="grid grid-cols-4 pt-10">
 
-          {
-            plantList.map((value)=>{
-              return <>
-              <PlantCard title={value.title} price={value.price} image={value.image}  />
-              </>
-            })
-          }
-          
-         
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {products.slice(0, 8).map((plant) => (
+          <PlantCard key={plant._id} product={plant} />
+        ))}
       </div>
+
+      {products.length === 0 && (
+        <div className="text-center text-gray-500 py-12">
+          No plants available at the moment.
+        </div>
+      )}
     </div>
   );
 };

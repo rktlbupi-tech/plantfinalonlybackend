@@ -1,97 +1,107 @@
 import { create } from "zustand";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-// Dummy products data
-const initialProducts = [
-  {
-    id: 1,
-    name: "Monstera Deliciosa",
-    description: "Large tropical plant with unique split leaves",
-    price: 45.99,
-    category: "Indoor",
-    stock: 25,
-    image: "https://images.unsplash.com/photo-1519336056116-9e799c0a2b0c?w=400",
-    status: "active",
-    createdAt: "2024-01-15"
-  },
-  {
-    id: 2,
-    name: "Snake Plant",
-    description: "Low maintenance air-purifying plant",
-    price: 29.99,
-    category: "Indoor",
-    stock: 40,
-    image: "https://images.unsplash.com/photo-1593691509545-8d834b6c2e2a?w=400",
-    status: "active",
-    createdAt: "2024-01-10"
-  },
-  {
-    id: 3,
-    name: "Peace Lily",
-    description: "Elegant white flowers, perfect for low light",
-    price: 35.50,
-    category: "Indoor",
-    stock: 18,
-    image: "https://images.unsplash.com/photo-1463154545680-d59320fd685d?w=400",
-    status: "active",
-    createdAt: "2024-01-08"
-  },
-  {
-    id: 4,
-    name: "Fiddle Leaf Fig",
-    description: "Popular large-leafed statement plant",
-    price: 89.99,
-    category: "Indoor",
-    stock: 12,
-    image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400",
-    status: "active",
-    createdAt: "2024-01-05"
-  },
-  {
-    id: 5,
-    name: "Pothos Golden",
-    description: "Trailing vine plant, easy to care for",
-    price: 19.99,
-    category: "Indoor",
-    stock: 50,
-    image: "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?w=400",
-    status: "active",
-    createdAt: "2024-01-12"
-  }
-];
+const API_URL = "http://localhost:4000/api/v1/product";
 
 export const useProductStore = create((set, get) => ({
-  products: initialProducts,
-  
-  addProduct: (product) => {
-    const newProduct = {
-      ...product,
-      id: Date.now(),
-      status: "active",
-      createdAt: new Date().toISOString().split('T')[0],
-      stock: parseInt(product.stock) || 0
-    };
-    set((state) => ({
-      products: [newProduct, ...state.products]
-    }));
-    return newProduct;
+  products: [],
+  loading: false,
+  error: null,
+
+  fetchProducts: async () => {
+    set({ loading: true });
+    try {
+      const response = await axios.get(`${API_URL}/get-items`);
+      // Assuming response.data.data contains the list of products based on typical API structure
+      // Adjust if the structure is different (e.g. response.data.products)
+      set({ products: response.data.data || [], loading: false, error: null });
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      set({ loading: false, error: "Failed to fetch products" });
+      // toast.error("Failed to fetch products");
+    }
   },
-  
-  updateProduct: (id, updates) => {
-    set((state) => ({
-      products: state.products.map((p) =>
-        p.id === id ? { ...p, ...updates } : p
-      )
-    }));
+
+  addProduct: async (productData) => {
+    set({ loading: true });
+    try {
+      const token = localStorage.getItem("auth-storage")
+        ? JSON.parse(localStorage.getItem("auth-storage")).state.token
+        : null;
+
+      const response = await axios.post(`${API_URL}/add`, productData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      set((state) => ({
+        products: [response.data.data, ...state.products],
+        loading: false
+      }));
+      toast.success("Product added successfully");
+      return true;
+    } catch (error) {
+      console.error("Error adding product:", error);
+      set({ loading: false, error: error.response?.data?.message || "Failed to add product" });
+      toast.error(error.response?.data?.message || "Failed to add product");
+      return false;
+    }
   },
-  
-  deleteProduct: (id) => {
-    set((state) => ({
-      products: state.products.filter((p) => p.id !== id)
-    }));
+
+  updateProduct: async (id, updates) => {
+    set({ loading: true });
+    try {
+      const token = localStorage.getItem("auth-storage")
+        ? JSON.parse(localStorage.getItem("auth-storage")).state.token
+        : null;
+
+      const response = await axios.put(`${API_URL}/edit/${id}`, updates, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      set((state) => ({
+        products: state.products.map((p) =>
+          p._id === id ? response.data.data : p
+        ),
+        loading: false
+      }));
+      toast.success("Product updated successfully");
+      return true;
+    } catch (error) {
+      console.error("Error updating product:", error);
+      set({ loading: false, error: "Failed to update product" });
+      toast.error("Failed to update product");
+      return false;
+    }
   },
-  
+
+  deleteProduct: async (id) => {
+    set({ loading: true });
+    try {
+      const token = localStorage.getItem("auth-storage")
+        ? JSON.parse(localStorage.getItem("auth-storage")).state.token
+        : null;
+
+      await axios.delete(`${API_URL}/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      set((state) => ({
+        products: state.products.filter((p) => p._id !== id),
+        loading: false
+      }));
+      toast.success("Product deleted successfully");
+      return true;
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      set({ loading: false, error: "Failed to delete product" });
+      toast.error("Failed to delete product");
+      return false;
+    }
+  },
+
   getProductById: (id) => {
-    return get().products.find((p) => p.id === id);
+    return get().products.find((p) => p._id === id);
   }
 }));
 

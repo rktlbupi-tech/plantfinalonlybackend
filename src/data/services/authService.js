@@ -22,24 +22,37 @@ export const authService = {
     }
   },
 
-  async register(formData)
-  {
+  async register(formData) {
     console.log("hello33")
-    try{
-      const response = await apiClient.post("auth/signup",formData);
-       if(response.success == false)
-       {
+    try {
+      const response = await apiClient.post("auth/signup", formData);
+      if (response.success == false) {
         throw new Error(data.message || "Register failed");
-       }
-       console.log("data is coming from register")
-       console.log(response.message)
-       return response.data;
+      }
+      console.log("data is coming from register")
+      console.log(response.message)
+      return response.data;
 
-    }catch(e)
-    {
+    } catch (e) {
 
-      console.log("Error",e)
+      console.log("Error", e)
 
+    }
+  },
+
+  async updateProfile(data) {
+    try {
+      const token = localStorage.getItem("auth-storage")
+        ? JSON.parse(localStorage.getItem("auth-storage")).state.token
+        : null;
+
+      const response = await apiClient.put("/auth/update-profile", data, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.data;
+    } catch (e) {
+      console.error("Error updating profile:", e);
+      throw e;
     }
   }
 };

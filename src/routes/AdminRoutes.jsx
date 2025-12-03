@@ -1,22 +1,24 @@
 import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import AdminLayout from "../layouts/AdminLayout";
-import AdminDashboard from "../pages/admin/AdminDashboard";
-import AddItems from "../pages/admin/AddItems";
+// import AddItems from "../pages/admin/AddItems"; // Removed
 import TrackOrders from "../pages/admin/TrackOrders";
+import AdminUsers from "../pages/admin/AdminUsers";
+import AdminApprovals from "../pages/admin/AdminApprovals";
+import AdminDashboard from "../pages/admin/AdminDashboard";
 
 const AdminRoutes = () => {
   return (
     <Routes>
       <Route element={<AdminLayout />}>
-        <Route path="" element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="products" element={<AddItems />} />
+        {/* <Route path="products" element={<AddItems />} /> */}
         <Route path="orders" element={<TrackOrders />} />
+        <Route path="users" element={<AdminUsers />} />
+        <Route path="approvals" element={<AdminApprovals />} />
       </Route>
     </Routes>
   );
 };
 
 export default AdminRoutes;
-
